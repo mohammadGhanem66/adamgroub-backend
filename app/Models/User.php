@@ -52,9 +52,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    public function continers()
+    public function containers()
     {
-        return $this->hasMany(Containers::class);
+        return $this->hasMany(Container::class);
     }
     public function account_statments()
     {

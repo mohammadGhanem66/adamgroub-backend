@@ -15,8 +15,13 @@ class Account_statment extends Model
         'file_name',
         'file_path',
     ];
+    protected $appends = ['public_url'];
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function getPublicUrlAttribute()
+    {
+        return url('storage/' . $this->file_path);
     }
 }

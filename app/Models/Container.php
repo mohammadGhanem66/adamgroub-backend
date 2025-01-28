@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Containers extends Model
+class Container extends Model
 {
     //
     use HasFactory;
@@ -16,8 +16,13 @@ class Containers extends Model
         'file_path',
         'user_id',
     ];
+    protected $appends = ['public_url'];
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function getPublicUrlAttribute()
+    {
+        return url('storage/' . $this->file_path);
     }
 }
