@@ -21,6 +21,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'phone',
+        'address',
+        'city',
+        'is_admin',
     ];
 
     /**
@@ -44,5 +48,13 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+    public function continers()
+    {
+        return $this->hasMany(Containers::class);
+    }
+    public function account_statments()
+    {
+        return $this->hasMany(Account_statment::class);
     }
 }
