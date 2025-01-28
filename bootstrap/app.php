@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\AddAcceptJsonHeader;
+use App\Http\Middleware\HandleHttpExceptions;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -12,7 +14,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->append(AddAcceptJsonHeader::class);
+        $middleware->append(HandleHttpExceptions::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
