@@ -123,4 +123,26 @@ class UserController extends Controller
             ]);
         }
     }
+    public function getUserContainers(string $id){
+        try{
+            $user = User::findOrFail($id);
+            $containers = $user->containers;
+            Log::info("User containers fetched ..!, ".$user->name);
+            return response()->json([
+                'containers' => $containers,
+            ], 200);
+        }catch(\Exception $e){
+            return response()->json([
+                'message' => 'User not found',
+            ]);
+        }
+    }
+    public function getContainersForLoggedUser(Request $request){
+        $user = auth()->user();
+        $containers = $user->containers;
+        Log::info("User containers fetched ..!, ".$user->name);
+        return response()->json([
+            'containers' => $containers,
+        ], 200);
+    }
 }

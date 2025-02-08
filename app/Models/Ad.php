@@ -20,5 +20,9 @@ class Ad extends Model
         'created_at',
         'updated_at',
     ];
-
+    protected $appends = ['public_url'];
+    public function getPublicUrlAttribute()
+    {
+        return url('storage/' . $this->image_path);
+    }
 }

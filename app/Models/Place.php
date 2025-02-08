@@ -21,4 +21,9 @@ class Place extends Model
         'city',
         'country',
     ];
+    protected $appends = ['public_url'];
+    public function getPublicUrlAttribute()
+    {
+        return url('storage/' . $this->image_path);
+    }
 }
