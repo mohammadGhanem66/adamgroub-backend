@@ -24,7 +24,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('ads', AdController::class)->only(['store', 'destroy', 'update']);
     Route::get('users/{user_id}/containers', [UserController::class, 'getUserContainers']);
     Route::get('user/containers', [UserController::class, 'getContainersForLoggedUser']);
-
+    Route::get('user/account-statments', [UserController::class, 'getAccountStatmentsForLoggedUser']);
+    Route::patch('user/password', [AuthController::class, 'changePassword']);
+    Route::patch('user/mobile', [UserController::class, 'changeMobile']);
+    Route::post('user/notifications/send', [UserController::class, 'sendNotification']);
 
 
 });

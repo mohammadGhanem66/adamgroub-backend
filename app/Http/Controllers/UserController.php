@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Hash;
+use Http;
 use Illuminate\Http\Request;
 use Log;
 
@@ -103,6 +104,20 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         //
+        try{
+            $user = User::findOrFail($id);
+            $user->containers()->delete();
+            $user->account_statments()->delete();
+            $user->delete();
+            Log::info("User deleted ..!, ".$user->name);
+            return response()->json([
+                "message" => "Resource deleted successfully.",
+            ], 200);
+        }catch(\Exception $e){
+            return response()->json([
+                'message' => 'User not found',
+            ]);
+        }
     }
     public function resetPassword(Request $request, string $id){
         $validated = $request->validate([
@@ -144,5 +159,59 @@ class UserController extends Controller
         return response()->json([
             'containers' => $containers,
         ], 200);
+    }
+    public function getAccountStatmentsForLoggedUser(Request $request){
+        $user = auth()->user();
+        $account_statments = $user->account_statments;
+        Log::info("User account_statments fetched ..!, ".$user->name);
+        return response()->json([
+            'account_statments' => $account_statments,
+        ], 200);
+    }
+    public function changeMobile(Request $request){
+        $user = auth()->user();
+        $request->validate([
+            'phone' => 'required|string|regex:/^(\+?\d{1,4}[\s-])?(?!0+\s+,?$)\d{10,13}$/|unique:users,phone',
+        ]);
+        $user->phone = $request->phone;
+        $user->save();
+        Log::info("User mobile changed ..!, ".$user->name);
+        return response()->json([
+            'status' => true,
+            'message' => 'Mobile number updated successfully',
+            'phone' => $user->phone,
+        ], 200);
+    }
+    public function sendNotification(Request $request){
+        $request->validate([
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string',
+            'user_ids' => 'required|array',
+            'user_ids.*' => 'integer|exists:users,id'
+        ]);
+        // Retrieve device tokens for the provided user IDs
+        $tokens = User::whereIn('id', $request->user_ids)->pluck('id')->toArray();
+        if (empty($tokens)) {
+            return response()->json(['status' => false, 'message' => 'No ID found for the provided user IDs.'], 404);
+        }
+        $notificationData = [
+            'registration_ids' => $tokens,
+            'notification' => [
+                'title' => $request->subject,
+                'body' => $request->message,
+                'sound' => 'default',
+            ]
+        ];
+        $response = Http::withHeaders([
+            'Authorization' => 'key=YOUR_FIREBASE_SERVER_KEY',
+            'Content-Type' => 'application/json',
+        ])->post('https://fcm.googleapis.com/fcm/send', $notificationData);
+
+        if ($response->successful()) {
+            return response()->json(['status' => true, 'message' => 'Notifications sent successfully.']);
+        } else {
+            return response()->json(['status' => false, 'message' => 'Failed to send notifications.', 'error' => $response->body()], 500);
+        }
+        
     }
 }

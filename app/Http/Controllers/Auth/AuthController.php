@@ -42,4 +42,26 @@ class AuthController extends Controller
             'message' => 'Logged out successfully',
         ]);
     }
+    public function changePassword(Request $request){
+        $request->validate([
+            'old_password' => 'required|string|min:6',
+            'new_password' => 'required|string|min:6',
+        ]);
+        $user = auth()->user();
+
+        if (!Hash::check($request->old_password, $user->password)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Old password is incorrect'
+            ], 400);
+        }
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Password changed successfully'
+        ], 200);
+        
+    }
 }
