@@ -60,4 +60,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(Account_statment::class);
     }
+    public function user_devices()
+    {
+        return $this->hasMany(User_device::class);
+    }
 }

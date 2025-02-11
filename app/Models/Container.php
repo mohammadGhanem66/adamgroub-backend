@@ -15,6 +15,7 @@ class Container extends Model
         'file_name',
         'file_path',
         'user_id',
+        'type'
     ];
     protected $appends = ['public_url'];
     public function user()
