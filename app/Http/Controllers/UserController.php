@@ -245,4 +245,18 @@ class UserController extends Controller
             'message' => 'Token stored successfully',
         ], 200);
     }
+    public function getUserAccountStatments(string $id){
+        try{
+            $user = User::findOrFail($id);
+            $account_statments = $user->account_statments;
+            Log::info("User account_statments fetched ..!, ".$user->name);
+            return response()->json([
+                'account_statments' => $account_statments,
+            ], 200);
+        }catch(\Exception $e){
+            return response()->json([
+                'message' => 'User not found',
+            ]);
+        }
+    }
 }

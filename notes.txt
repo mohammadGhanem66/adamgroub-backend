@@ -62,3 +62,5 @@ db -> Add type column to containsers which will be fully shippment or partially
 -> change user password 
 ---> send notication when attach containers ..!
 باللغة العربية ! 
+php artisan make:migration create_table_user_devices --create=user_devices
+php artisan make:migration add_cloumns_to_containers --table=containers

@@ -31,7 +31,7 @@ class AccountStatmentController extends Controller
             $file = $request->file('file_path');
             $fileName = $file->getClientOriginalName();
             $path = $file->store('account_statments', 'public');
-
+            $user->account_statments()->delete();
             $accountStatment = $user->account_statments()->create([
                 'file_name' => $validated['file_name'],
                 'file_path' => $path,
