@@ -12,7 +12,13 @@ use Illuminate\Support\Facades\Route;
 Route::post('login', [AuthController::class, 'login']);
 Route::apiResource('places', PlaceController::class)->only(['index', 'show']);
 Route::apiResource('ads', AdController::class)->only(['index', 'show']);
+Route::get('storage/{path}', function ($path) {
+    $file = Storage::disk('public')->path($path);
 
+    abort_unless(file_exists($file), 404);
+
+    return response()->file($file);
+})->where('path', '.*');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
