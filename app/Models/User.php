@@ -91,5 +91,9 @@ class User extends Authenticatable
 
         return $accountStatmentFiles->merge($containerFiles);
     }
+    public function notifications()
+    {
+        return $this->hasMany(Notfication::class);
+    }
 
 }

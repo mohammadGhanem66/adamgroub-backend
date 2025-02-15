@@ -109,5 +109,17 @@ class PlaceController extends Controller
     public function destroy(string $id)
     {
         //
+        try{
+            $place = Place::findOrFail($id);
+            $place->delete();
+            Log::info("Place deleted ..!, ".$place->name);
+            return response()->json([
+                "message" => "Resource deleted successfully.",
+            ], 200);
+        }catch(\Exception $e){
+            return response()->json([
+                'message' => 'Place not found',
+            ]);
+        }
     }
 }

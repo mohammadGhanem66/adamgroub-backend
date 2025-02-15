@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountStatmentController;
 use App\Http\Controllers\AdController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\ContainerController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -28,6 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('users/{user_id}/account-statments', [AccountStatmentController::class, 'store']);
     Route::apiResource('places', PlaceController::class)->only(['store', 'destroy', 'update']);
     Route::apiResource('ads', AdController::class)->only(['store', 'destroy', 'update']);
+    Route::apiResource('notifications', NotificationController::class);
     Route::get('users/{user_id}/containers', [UserController::class, 'getUserContainers']);
     Route::get('user/containers', [UserController::class, 'getContainersForLoggedUser']);
     Route::get('user/account-statments', [UserController::class, 'getAccountStatmentsForLoggedUser']);

@@ -61,6 +61,11 @@ db -> Add type column to containsers which will be fully shippment or partially
 -> send notification ) ممكن نبعت لكل اليوزرس الي الهم شحن جزئي فقط او كلي فقط وهكذا
 -> change user password 
 ---> send notication when attach containers ..!
-باللغة العربية ! 
-php artisan make:migration create_table_user_devices --create=user_devices
-php artisan make:migration add_cloumns_to_containers --table=containers
+ 
+
+---
+Font Ciro
+Font size ++
+Firebase read notfications 
+++ when attach container send notfication !!
+
