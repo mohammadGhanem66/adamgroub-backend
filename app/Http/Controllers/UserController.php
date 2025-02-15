@@ -259,4 +259,18 @@ class UserController extends Controller
             ]);
         }
     }
+    public function getUploadedFile(Request $request, string $id){
+        try{
+            $user = User::findOrFail($id);
+            $files = $user->files();
+            Log::info("User files fetched ..!, ".$user->name);
+            return response()->json([
+                'files' => $files,
+            ], 200);
+        }catch(\Exception $e){
+            return response()->json([
+                'message' => 'User not found'.$e    ,
+            ]);
+        }
+    }
 }

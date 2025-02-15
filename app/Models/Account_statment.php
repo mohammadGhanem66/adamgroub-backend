@@ -16,6 +16,10 @@ class Account_statment extends Model
         'file_path',
     ];
     protected $appends = ['public_url'];
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
     public function user()
     {
         return $this->belongsTo(User::class);

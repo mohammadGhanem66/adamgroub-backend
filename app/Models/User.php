@@ -39,7 +39,7 @@ class User extends Authenticatable
         'created_at',
         'updated_at'
     ];
-
+    protected $appends = ['containers_count'];
     /**
      * Get the attributes that should be cast.
      *
@@ -64,4 +64,32 @@ class User extends Authenticatable
     {
         return $this->hasMany(User_device::class);
     }
+    public function getContainersCountAttribute()
+    {
+        return $this->containers()->count();
+    }
+    // let's write  function called files, will get all the files attached to the user from account_statment and containers tables
+    public function files()
+    {
+        $accountStatmentFiles = $this->account_statments()->get()->map(function ($file) {
+            return [
+                'name'   => $file->file_name,
+                'url'  => $file->public_url,
+                'extension'   => pathinfo($file->file_path, PATHINFO_EXTENSION),
+                'type'        => 'bank'
+            ];
+        });
+
+        $containerFiles = $this->containers()->get()->map(function ($file) {
+            return [
+                'name'   => $file->file_name,
+                'url'  => $file->public_url,
+                'extension'   => pathinfo($file->file_path, PATHINFO_EXTENSION),
+                'type'        => 'container'
+            ];
+        });
+
+        return $accountStatmentFiles->merge($containerFiles);
+    }
+
 }

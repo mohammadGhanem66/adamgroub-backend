@@ -17,6 +17,10 @@ class Container extends Model
         'user_id',
         'type'
     ];
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
     protected $appends = ['public_url'];
     public function user()
     {
