@@ -215,6 +215,18 @@ class UserController extends Controller
                         "body" => $request->message,
                         "sound" => "default",
                     ]
+                ],
+                'android' => [  // Add sound for Android devices
+                    'notification' => [
+                        'sound' => 'default'
+                    ]
+                ],
+                'apns' => [  // Add sound for iOS devices
+                    'payload' => [
+                        'aps' => [
+                            'sound' => 'default'
+                        ]
+                    ]
                 ]
             ];
     
