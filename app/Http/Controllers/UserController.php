@@ -200,7 +200,7 @@ class UserController extends Controller
         $accessToken = $this->getAccessToken();  // Generate the OAuth2 token
 
         $notificationData = [
-            'registration_ids' => $tokens,
+            'tokens' => $tokens,
             'notification' => [
                 'title' => $request->subject,
                 'body' => $request->message,
