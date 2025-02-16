@@ -211,8 +211,7 @@ class UserController extends Controller
                     "token" => $token,
                     "notification" => [
                         "title" => $request->subject,
-                        "body" => $request->message,
-                        "sound" => "default",
+                        "body" => $request->message
                     ],
                     "android" => [
                         "notification" => [
