@@ -205,7 +205,6 @@ class UserController extends Controller
     
         // Prepare FCM v1 Payload
         $responses = [];
-    
         foreach ($tokens as $token) {
             $notificationData = [
                 "message" => [
@@ -214,31 +213,38 @@ class UserController extends Controller
                         "title" => $request->subject,
                         "body" => $request->message,
                         "sound" => "default",
-                    ]
-                ],
-                'android' => [  // Add sound for Android devices
-                    'notification' => [
-                        'sound' => 'default'
-                    ]
-                ],
-                'apns' => [  // Add sound for iOS devices
-                    'payload' => [
-                        'aps' => [
-                            'sound' => 'default'
+                    ],
+                    "android" => [
+                        "notification" => [
+                            "sound" => "default"
+                        ]
+                    ],
+                    "apns" => [
+                        "payload" => [
+                            "aps" => [
+                                "sound" => "default"
+                            ]
                         ]
                     ]
                 ]
             ];
     
-            // Send request to FCM
-            $response = Http::withToken($accessToken)
-                ->post('https://fcm.googleapis.com/v1/projects/YOUR_PROJECT_ID/messages:send', $notificationData);
+            try {
+                $response = Http::withToken($accessToken)
+                    ->post('https://fcm.googleapis.com/v1/projects/YOUR_PROJECT_ID/messages:send', $notificationData);
     
-            $responses[] = [
-                'token' => $token,
-                'response' => $response->json(),
-                'status' => $response->successful(),
-            ];
+                $responses[] = [
+                    'token' => $token,
+                    'response' => $response->json(),
+                    'status' => $response->successful(),
+                ];
+            } catch (\Exception $e) {
+                $responses[] = [
+                    'token' => $token,
+                    'error' => $e->getMessage(),
+                    'status' => false
+                ];
+            }
         }
     
         return response()->json([
@@ -247,6 +253,7 @@ class UserController extends Controller
             'results' => $responses
         ]);
     }
+    
     
     // Function to Get OAuth2 Token
     private function getAccessToken()
