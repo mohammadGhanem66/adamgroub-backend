@@ -184,50 +184,67 @@ class UserController extends Controller
             'phone' => $user->phone,
         ], 200);
     }
-    public function sendNotification(Request $request){
+    public function sendNotification(Request $request)
+    {
         $request->validate([
             'subject' => 'required|string|max:255',
             'message' => 'required|string',
             'user_ids' => 'required|array',
             'user_ids.*' => 'integer|exists:users,id'
         ]);
-        // Retrieve device tokens for the provided user IDs
+    
+        // Get device tokens
         $tokens = User_device::whereIn('user_id', $request->user_ids)->pluck('device_token')->toArray();
-        if (empty($tokens)) {
-            return response()->json(['status' => false, 'message' => 'No ID found for the provided user IDs.'], 404);
-        }
-
-        $accessToken = $this->getAccessToken();  // Generate the OAuth2 token
-
-        $notificationData = [
-            'tokens' => $tokens,
-            'notification' => [
-                'title' => $request->subject,
-                'body' => $request->message,
-                'sound' => 'default',
-            ]
-        ];
-       
-         // Send the notification using HTTP v1 API
-        $response = Http::withToken($accessToken)
-        ->post('https://fcm.googleapis.com/v1/projects/YOUR_PROJECT_ID/messages:send', $notificationData);
-
-        if ($response->successful()) {
-            return response()->json(['status' => true, 'message' => 'Notifications sent successfully.']);
-        } else {
-            return response()->json(['status' => false, 'message' => 'Failed to send notifications.', 'error' => $response->body()], 500);
-        }
         
+        if (empty($tokens)) {
+            return response()->json(['status' => false, 'message' => 'No device tokens found for the provided user IDs.'], 404);
+        }
+    
+        // Generate OAuth2 Access Token
+        $accessToken = $this->getAccessToken();
+    
+        // Prepare FCM v1 Payload
+        $responses = [];
+    
+        foreach ($tokens as $token) {
+            $notificationData = [
+                "message" => [
+                    "token" => $token,
+                    "notification" => [
+                        "title" => $request->subject,
+                        "body" => $request->message,
+                        "sound" => "default",
+                    ]
+                ]
+            ];
+    
+            // Send request to FCM
+            $response = Http::withToken($accessToken)
+                ->post('https://fcm.googleapis.com/v1/projects/YOUR_PROJECT_ID/messages:send', $notificationData);
+    
+            $responses[] = [
+                'token' => $token,
+                'response' => $response->json(),
+                'status' => $response->successful(),
+            ];
+        }
+    
+        return response()->json([
+            'status' => true,
+            'message' => 'Notifications processed.',
+            'results' => $responses
+        ]);
     }
-
+    
+    // Function to Get OAuth2 Token
     private function getAccessToken()
-{
-    $client = new Client();
-    $client->setAuthConfig(storage_path('fcm-service-account.json'));
-    $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
-
-    return $client->fetchAccessTokenWithAssertion()['access_token'];
-}
+    {
+        $client = new Client();
+        $client->setAuthConfig(storage_path('fcm-service-account.json'));
+        $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
+    
+        return $client->fetchAccessTokenWithAssertion()['access_token'];
+    }
     public function StoreMobileToken(Request $request){
         $request->validate([
             'device_token' => 'required|string|max:255',
