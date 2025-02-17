@@ -77,6 +77,7 @@ class FCMNotificationService
             'message' => $message,
             'data' => $response,
         ]);
+        Log::channel('fcm')->info('FCM Notification History Stored', ['notificationId' => $notification->id]);
     }
     private function buildNotificationPayload(string $token, string $title, string $message): array
     {
