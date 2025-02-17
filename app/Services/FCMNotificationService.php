@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Notfication;
 use Log;
 use Http;
 use App\Models\User_device;
@@ -14,26 +15,35 @@ class FCMNotificationService
     public function sendNotification(array $userIds, string $title, string $message): array
     {
         $tokens = User_device::whereIn('user_id', $userIds)->pluck('device_token')->toArray();
-
+        $devices = User_device::whereIn('user_id', $userIds)
+        ->get(['user_id', 'device_token']);
         if (empty($tokens)) {
             return ['status' => false, 'message' => 'No device tokens found for the provided user IDs.'];
         }
 
         $accessToken = $this->getAccessToken();
         $responses = [];
-
-        foreach ($tokens as $token) {
+        $processedUsers = []; // Keeps track of processed user IDs
+        foreach ($devices as $device) {
+            $userId = $device->user_id;
+            $token = $device->device_token;
             $notificationData = $this->buildNotificationPayload($token, $title, $message);
 
             try {
                 $response = Http::withToken($accessToken)->post($this->projectUrl, $notificationData);
                 $logData = [
+                    'userId' => $userId,
                     'token' => $token,
                     'status' => $response->successful(),
                     'response' => $response->json(),
                 ];
                 if ($response->successful()) {
                     Log::channel('fcm')->info('FCM Notification Sent', $logData);
+                    // Store notification history **only once per user**
+                    if (!isset($processedUsers[$userId])) {
+                        $this->storeNotificationsHistory($userId, $title, $message, $response->json());
+                        $processedUsers[$userId] = true; // Mark as processed
+                    }
                 } else {
                     Log::channel('fcm')->error('FCM Notification Failed', $logData);
                 }
@@ -58,6 +68,15 @@ class FCMNotificationService
             'message' => 'Notifications processed.',
             'results' => $responses
         ];
+    }
+    private function storeNotificationsHistory($userId, $title, $message, $response) {
+        // Store notification in DB
+        $notification = Notfication::create([
+            'user_id' => $userId,
+            'title' => $title,
+            'message' => $message,
+            'data' => $response,
+        ]);
     }
     private function buildNotificationPayload(string $token, string $title, string $message): array
     {
