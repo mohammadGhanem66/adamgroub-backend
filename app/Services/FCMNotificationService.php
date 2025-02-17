@@ -25,7 +25,7 @@ class FCMNotificationService
         $responses = [];
         $processedUsers = []; // Keeps track of processed user IDs
         foreach ($devices as $device) {
-            $userId = $device->user_id;
+            $userId =  (int) $device->user_id;
             $token = $device->device_token;
             $notificationData = $this->buildNotificationPayload($token, $title, $message);
 
@@ -40,7 +40,7 @@ class FCMNotificationService
                 if ($response->successful()) {
                     Log::channel('fcm')->info('FCM Notification Sent', $logData);
                     // Store notification history **only once per user**
-                    if (!isset($processedUsers[$userId])) {
+                    if (!array_key_exists($userId, $processedUsers)) {
                         $this->storeNotificationsHistory($userId, $title, $message, $response->json());
                         $processedUsers[$userId] = true; // Mark as processed
                     }
