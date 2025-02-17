@@ -9,9 +9,16 @@ use Hash;
 use Http;
 use Illuminate\Http\Request;
 use Log;
+use App\Services\FCMNotificationService;
 
 class UserController extends Controller
 {
+    protected FCMNotificationService $fcmService;
+
+    public function __construct(FCMNotificationService $fcmService)
+    {
+        $this->fcmService = $fcmService;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -192,65 +199,71 @@ class UserController extends Controller
             'user_ids' => 'required|array',
             'user_ids.*' => 'integer|exists:users,id'
         ]);
-    
-        // Get device tokens
-        $tokens = User_device::whereIn('user_id', $request->user_ids)->pluck('device_token')->toArray();
+        $response = $this->fcmService->sendNotification(
+            $request->user_ids,
+            $request->subject,
+            $request->message
+        );
+
+        return response()->json($response);
+        // // Get device tokens
+        // $tokens = User_device::whereIn('user_id', $request->user_ids)->pluck('device_token')->toArray();
         
-        if (empty($tokens)) {
-            return response()->json(['status' => false, 'message' => 'No device tokens found for the provided user IDs.'], 404);
-        }
+        // if (empty($tokens)) {
+        //     return response()->json(['status' => false, 'message' => 'No device tokens found for the provided user IDs.'], 404);
+        // }
     
-        // Generate OAuth2 Access Token
-        $accessToken = $this->getAccessToken();
+        // // Generate OAuth2 Access Token
+        // $accessToken = $this->getAccessToken();
     
-        // Prepare FCM v1 Payload
-        $responses = [];
-        foreach ($tokens as $token) {
-            $notificationData = [
-                "message" => [
-                    "token" => $token,
-                    "notification" => [
-                        "title" => $request->subject,
-                        "body" => $request->message
-                    ],
-                    "android" => [
-                        "notification" => [
-                            "sound" => "default"
-                        ]
-                    ],
-                    "apns" => [
-                        "payload" => [
-                            "aps" => [
-                                "sound" => "default"
-                            ]
-                        ]
-                    ]
-                ]
-            ];
+        // // Prepare FCM v1 Payload
+        // $responses = [];
+        // foreach ($tokens as $token) {
+        //     $notificationData = [
+        //         "message" => [
+        //             "token" => $token,
+        //             "notification" => [
+        //                 "title" => $request->subject,
+        //                 "body" => $request->message
+        //             ],
+        //             "android" => [
+        //                 "notification" => [
+        //                     "sound" => "default"
+        //                 ]
+        //             ],
+        //             "apns" => [
+        //                 "payload" => [
+        //                     "aps" => [
+        //                         "sound" => "default"
+        //                     ]
+        //                 ]
+        //             ]
+        //         ]
+        //     ];
     
-            try {
-                $response = Http::withToken($accessToken)
-                    ->post('https://fcm.googleapis.com/v1/projects/adamgriup-3b108/messages:send', $notificationData);
+        //     try {
+        //         $response = Http::withToken($accessToken)
+        //             ->post('https://fcm.googleapis.com/v1/projects/adamgriup-3b108/messages:send', $notificationData);
     
-                $responses[] = [
-                    'token' => $token,
-                    'response' => $response->json(),
-                    'status' => $response->successful(),
-                ];
-            } catch (\Exception $e) {
-                $responses[] = [
-                    'token' => $token,
-                    'error' => $e->getMessage(),
-                    'status' => false
-                ];
-            }
-        }
+        //         $responses[] = [
+        //             'token' => $token,
+        //             'response' => $response->json(),
+        //             'status' => $response->successful(),
+        //         ];
+        //     } catch (\Exception $e) {
+        //         $responses[] = [
+        //             'token' => $token,
+        //             'error' => $e->getMessage(),
+        //             'status' => false
+        //         ];
+        //     }
+        // }
     
-        return response()->json([
-            'status' => true,
-            'message' => 'Notifications processed.',
-            'results' => $responses
-        ]);
+        // return response()->json([
+        //     'status' => true,
+        //     'message' => 'Notifications processed.',
+        //     'results' => $responses
+        // ]);
     }
     
     
