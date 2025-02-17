@@ -13,7 +13,7 @@ class FCMNotificationService
     protected string $projectUrl = 'https://fcm.googleapis.com/v1/projects/adamgriup-3b108/messages:send';
     public function sendNotification(array $userIds, string $title, string $message): array
     {
-        $tokens = User_device   ::whereIn('user_id', $userIds)->pluck('device_token')->toArray();
+        $tokens = User_device::whereIn('user_id', $userIds)->pluck('device_token')->toArray();
 
         if (empty($tokens)) {
             return ['status' => false, 'message' => 'No device tokens found for the provided user IDs.'];
@@ -27,7 +27,16 @@ class FCMNotificationService
 
             try {
                 $response = Http::withToken($accessToken)->post($this->projectUrl, $notificationData);
-
+                $logData = [
+                    'token' => $token,
+                    'status' => $response->successful(),
+                    'response' => $response->json(),
+                ];
+                if ($response->successful()) {
+                    Log::channel('fcm')->info('FCM Notification Sent', $logData);
+                } else {
+                    Log::channel('fcm')->error('FCM Notification Failed', $logData);
+                }
                 $responses[] = [
                     'token' => $token,
                     'response' => $response->json(),

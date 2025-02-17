@@ -126,6 +126,11 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+        'fcm' => [
+            'driver' => 'daily', // Keeps logs organized per day
+            'path' => storage_path('logs/fcm.log'), // Log file location
+            'level' => 'debug', // Log everything from debug to critical
+        ],
 
     ],
 

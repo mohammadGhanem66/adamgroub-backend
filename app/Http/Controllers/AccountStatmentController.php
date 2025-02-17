@@ -3,11 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\FCMNotificationService;
 use Illuminate\Http\Request;
 use Log;
 
 class AccountStatmentController extends Controller
 {
+    protected FCMNotificationService $fcmService;
+
+    public function __construct(FCMNotificationService $fcmService)
+    {
+        $this->fcmService = $fcmService;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -38,7 +45,17 @@ class AccountStatmentController extends Controller
             ]);
 
             Log::info("Account-statment created ..!, ".$accountStatment->file_name);
+            //Send fcm ! 
+            $user_ids =[$user->id];
+            $subject ="اصدار كشف حساب";
+            $message = "عزيزي [اسم الزبون] ، تم إصدار كشف حساب جديد خاص بك. يمكنك عرض التفاصيل من خلال التطبيق.";
+            $message = str_replace(["[اسم الزبون]"], [$user->name], $message);
 
+            $response = $this->fcmService->sendNotification(
+                $user_ids,
+                $subject,
+                $message
+            );
             return response()->json([
                 'message' => 'Account-statment created successfully.',
                 'account_statment' => $accountStatment,
