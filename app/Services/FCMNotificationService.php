@@ -37,13 +37,14 @@ class FCMNotificationService
                     'status' => $response->successful(),
                     'response' => $response->json(),
                 ];
+                // Store notification history **only once per user**
+                if (!array_key_exists($userId, $processedUsers)) {
+                    Log::info("fm stored ...");
+                    $this->storeNotificationsHistory($userId, $title, $message, $response->json());
+                    $processedUsers[$userId] = true; // Mark as processed
+                }
                 if ($response->successful()) {
                     Log::channel('fcm')->info('FCM Notification Sent', $logData);
-                    // Store notification history **only once per user**
-                    if (!array_key_exists($userId, $processedUsers)) {
-                        $this->storeNotificationsHistory($userId, $title, $message, $response->json());
-                        $processedUsers[$userId] = true; // Mark as processed
-                    }
                 } else {
                     Log::channel('fcm')->error('FCM Notification Failed', $logData);
                 }
