@@ -3,11 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\FCMNotificationService;
 use Illuminate\Http\Request;
 use Log;
 
 class ContainerController extends Controller
 {
+    protected FCMNotificationService $fcmService;
+
+    public function __construct(FCMNotificationService $fcmService)
+    {
+        $this->fcmService = $fcmService;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -40,7 +47,18 @@ class ContainerController extends Controller
             ]);
 
             Log::info("Container created ..!, ".$container->file_name);
-
+            //Send fcm ! 
+            $user_ids =[$user->id];
+            $subject ="شحنه جديده";
+            $message = "عزيزي [اسم الزبون]، تمت إضافة شحنة جديدة ( نوع الشحنة ) إلى حسابك. يمكنك عرض تفاصيل الشحنة من خلال التطبيق.";
+            $type = $request->type ? 'شحن جزئي' : 'شحن كلي';
+            $message = str_replace(["[اسم الزبون]", "( نوع الشحنة )"], [$user->name, $type], $message);
+            
+            $response = $this->fcmService->sendNotification(
+                $user_ids,
+                $subject,
+                $message
+            );
             return response()->json([
                 'message' => 'Container created successfully.',
                 'container' => $container,

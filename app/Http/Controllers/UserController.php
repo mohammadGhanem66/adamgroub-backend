@@ -206,76 +206,9 @@ class UserController extends Controller
         );
 
         return response()->json($response);
-        // // Get device tokens
-        // $tokens = User_device::whereIn('user_id', $request->user_ids)->pluck('device_token')->toArray();
-        
-        // if (empty($tokens)) {
-        //     return response()->json(['status' => false, 'message' => 'No device tokens found for the provided user IDs.'], 404);
-        // }
-    
-        // // Generate OAuth2 Access Token
-        // $accessToken = $this->getAccessToken();
-    
-        // // Prepare FCM v1 Payload
-        // $responses = [];
-        // foreach ($tokens as $token) {
-        //     $notificationData = [
-        //         "message" => [
-        //             "token" => $token,
-        //             "notification" => [
-        //                 "title" => $request->subject,
-        //                 "body" => $request->message
-        //             ],
-        //             "android" => [
-        //                 "notification" => [
-        //                     "sound" => "default"
-        //                 ]
-        //             ],
-        //             "apns" => [
-        //                 "payload" => [
-        //                     "aps" => [
-        //                         "sound" => "default"
-        //                     ]
-        //                 ]
-        //             ]
-        //         ]
-        //     ];
-    
-        //     try {
-        //         $response = Http::withToken($accessToken)
-        //             ->post('https://fcm.googleapis.com/v1/projects/adamgriup-3b108/messages:send', $notificationData);
-    
-        //         $responses[] = [
-        //             'token' => $token,
-        //             'response' => $response->json(),
-        //             'status' => $response->successful(),
-        //         ];
-        //     } catch (\Exception $e) {
-        //         $responses[] = [
-        //             'token' => $token,
-        //             'error' => $e->getMessage(),
-        //             'status' => false
-        //         ];
-        //     }
-        // }
-    
-        // return response()->json([
-        //     'status' => true,
-        //     'message' => 'Notifications processed.',
-        //     'results' => $responses
-        // ]);
+
     }
-    
-    
-    // Function to Get OAuth2 Token
-    private function getAccessToken()
-    {
-        $client = new Client();
-        $client->setAuthConfig(storage_path('fcm-service-account.json'));
-        $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
-    
-        return $client->fetchAccessTokenWithAssertion()['access_token'];
-    }
+
     public function StoreMobileToken(Request $request){
         $request->validate([
             'device_token' => 'required|string|max:255',
