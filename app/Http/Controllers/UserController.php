@@ -230,7 +230,7 @@ class UserController extends Controller
     
             try {
                 $response = Http::withToken($accessToken)
-                    ->post('https://fcm.googleapis.com/v1/projects/YOUR_PROJECT_ID/messages:send', $notificationData);
+                    ->post('https://fcm.googleapis.com/v1/projects/adamgriup-3b108/messages:send', $notificationData);
     
                 $responses[] = [
                     'token' => $token,
