@@ -76,7 +76,7 @@ class FCMNotificationService
         $notification = Notfication::create([
             'user_id' => $userId,
             'title' => $title,
-            'message' => $message,
+            'body' => $message,
             // 'data' => $response,
         ]);
         Log::channel('fcm')->info('FCM Notification History Stored', ['notificationId' => $notification->id]);
