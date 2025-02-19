@@ -39,7 +39,7 @@ class FCMNotificationService
                 ];
                 // Store notification history **only once per user**
                 if (!array_key_exists($userId, $processedUsers)) {
-                    Log::info("fm stored ...");
+                    Log::info("fcm entered if statment ..!");
                     $this->storeNotificationsHistory($userId, $title, $message, $response->json());
                     $processedUsers[$userId] = true; // Mark as processed
                 }
@@ -71,6 +71,7 @@ class FCMNotificationService
         ];
     }
     private function storeNotificationsHistory($userId, $title, $message, $response) {
+        Log::info("fcm is storing now ..!");
         // Store notification in DB
         $notification = Notfication::create([
             'user_id' => $userId,
