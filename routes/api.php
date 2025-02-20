@@ -39,6 +39,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('user/mobile', [UserController::class, 'changeMobile']);
     Route::post('user/notifications/send', [UserController::class, 'sendNotification']);
     Route::post('user/token', [UserController::class, 'StoreMobileToken']);
-
+    Route::patch('ads/{ad_id}/publish', [AdController::class, 'publishAndUnpublish']);
 
 });

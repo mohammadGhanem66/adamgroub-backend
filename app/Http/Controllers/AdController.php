@@ -32,7 +32,6 @@ class AdController extends Controller
             'description' => 'required',
             'image_path' => 'required|file|mimes:png,jpg,jpeg,gif,svg',
             'image_name' => 'required',
-            'is_published' => 'required',
         ]);
         try{
             $file = $request->file('image_path');
@@ -103,5 +102,31 @@ class AdController extends Controller
     public function destroy(string $id)
     {
         //
+        try{
+            $ad = Ad::findOrFail($id);
+            $ad->delete();
+            Log::info("Ad deleted ..!, ".$ad->title);
+            return response()->json([
+                "message" => "Resource deleted successfully.",
+            ], 200);
+        }catch(\Exception $e){
+            return response()->json([
+                'message' => 'Ad not found',
+            ]);
+        }
+    }
+    public function publishAndUnpublish(Request $request, string $id){
+        try{
+            $ad = Ad::findOrFail($id);
+            $ad->update(['is_published' => !$ad->is_published]);
+            Log::info("Ad updated ..!, ".$ad->title);
+            return response()->json([
+                'ad' => $ad,
+            ], 200);
+        }catch(\Exception $e){
+            return response()->json([
+                'message' => 'Ad not updated '.$e->getMessage(),
+            ], 500);
+        }
     }
 }
