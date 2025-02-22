@@ -196,7 +196,7 @@ class UserController extends Controller
         $request->validate([
             'subject' => 'required|string|max:255',
             'message' => 'required|string',
-            'user_ids' => 'nullable|required|array',
+            'user_ids' => 'nullable|array',
             'user_ids.*' => 'integer|exists:users,id'
         ]);
         $userIds = $request->user_ids;
