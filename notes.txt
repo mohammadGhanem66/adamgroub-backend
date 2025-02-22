@@ -64,8 +64,6 @@ db -> Add type column to containsers which will be fully shippment or partially
  
 
 ---
-Font Ciro
-Font size ++
-Firebase read notfications 
-++ when attach container send notfication !!
+
+
 

@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountStatmentController;
 use App\Http\Controllers\AdController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\ContainerController;
+use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\UserController;
@@ -40,5 +41,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('user/notifications/send', [UserController::class, 'sendNotification']);
     Route::post('user/token', [UserController::class, 'StoreMobileToken']);
     Route::patch('ads/{ad_id}/publish', [AdController::class, 'publishAndUnpublish']);
-
+    Route::get('statistics', [GeneralController::class, 'index']);
 });
