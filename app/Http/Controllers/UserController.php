@@ -199,8 +199,23 @@ class UserController extends Controller
             'user_ids' => 'required|array',
             'user_ids.*' => 'integer|exists:users,id'
         ]);
+        $userIds = $request->user_ids;
+        if(isset($request->notificationType)){
+            if($request->notificationType == "A"){
+                $userIds = User::whereHas('containers', function ($query) {
+                    $query->where('type', 0);
+                })->pluck('id')->toArray();
+            }else if($request->notificationType == "B"){
+                $userIds = User::whereHas('containers', function ($query) {
+                    $query->where('type', 1);
+                })->pluck('id')->toArray();
+            }else {
+                $userIds = $request->user_ids;
+            }
+        }
+
         $response = $this->fcmService->sendNotification(
-            $request->user_ids,
+            $userIds,
             $request->subject,
             $request->message
         );
