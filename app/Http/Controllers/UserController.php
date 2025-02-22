@@ -197,7 +197,7 @@ class UserController extends Controller
             'subject' => 'required|string|max:255',
             'message' => 'required|string',
             'user_ids' => 'required|array',
-            'user_ids.*' => 'integer|exists:users,id'
+            'user_ids.*' => 'nullable|integer|exists:users,id'
         ]);
         $userIds = $request->user_ids;
         if(isset($request->notificationType)){
