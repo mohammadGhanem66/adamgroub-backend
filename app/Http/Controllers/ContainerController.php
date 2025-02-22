@@ -44,6 +44,7 @@ class ContainerController extends Controller
             $container = $user->containers()->create([
                 'file_name' => $validated['file_name'],
                 'file_path' => $path,
+                'type' => $validated['type'],
             ]);
 
             Log::info("Container created ..!, ".$container->file_name);
