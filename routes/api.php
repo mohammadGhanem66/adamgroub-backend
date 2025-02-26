@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('login', [AuthController::class, 'login']);
 Route::apiResource('places', PlaceController::class)->only(['index', 'show']);
 Route::apiResource('ads', AdController::class)->only(['index', 'show']);
+Route::get('admin/ads', [AdController::class, 'getAllAds']);
 Route::get('storage/{path}', function ($path) {
     $file = Storage::disk('public')->path($path);
 

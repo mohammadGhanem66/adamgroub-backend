@@ -20,7 +20,13 @@ class AdController extends Controller
             'ads' => $ads,
         ], 200);
     }
-
+    public function getAllAds(){
+        $ads = Ad::get();
+        Log::info("All ads fetched ..!");
+        return response()->json([
+            'ads' => $ads,
+        ], 200);
+    }
     /**
      * Store a newly created resource in storage.
      */
