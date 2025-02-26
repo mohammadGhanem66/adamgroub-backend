@@ -14,7 +14,7 @@ class AdController extends Controller
     public function index()
     {
         //
-        $ads = Ad::get();
+        $ads = Ad::where('is_published', 1)->get();
         Log::info("All ads fetched ..!");
         return response()->json([
             'ads' => $ads,
