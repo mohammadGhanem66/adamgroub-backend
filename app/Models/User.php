@@ -76,7 +76,8 @@ class User extends Authenticatable
                 'name'   => $file->file_name,
                 'url'  => $file->public_url,
                 'extension'   => pathinfo($file->file_path, PATHINFO_EXTENSION),
-                'type'        => 'bank'
+                'type'        => 'bank',
+                'date'        => $file->created_at
             ];
         });
 
@@ -85,7 +86,8 @@ class User extends Authenticatable
                 'name'   => $file->file_name,
                 'url'  => $file->public_url,
                 'extension'   => pathinfo($file->file_path, PATHINFO_EXTENSION),
-                'type'        => 'container'
+                'type'        => 'container',
+                'date'        => $file->created_at
             ];
         });
 
