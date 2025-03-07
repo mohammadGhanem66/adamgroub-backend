@@ -27,6 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::apiResource('users', UserController::class);
     Route::patch('users/{user_id}/reset-password', [UserController::class, 'resetPassword']);
+    Route::patch('users/{user_id}/update', [UserController::class, 'adminUpdate']);
     Route::post('users/{user_id}/containers', [ContainerController::class, 'store']);
     Route::post('users/{user_id}/account-statments', [AccountStatmentController::class, 'store']);
     Route::apiResource('places', PlaceController::class)->only(['store', 'destroy', 'update']);

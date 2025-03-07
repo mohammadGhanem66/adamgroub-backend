@@ -42,7 +42,7 @@ class UserController extends Controller
             'name' => 'required',
             'email' => 'required|email|unique:users',
             'phone' => 'required',
-            'password' => 'required|min:8',
+            'password' => 'required',
             'address' => 'nullable',
             'city' => 'nullable',
         ]);
@@ -106,7 +106,28 @@ class UserController extends Controller
             ]);
         }
     }
-
+    public function adminUpdate(Request $request, string $id)
+    {
+         $validated = $request->validate([
+            'name' => 'required',
+            //'email' => 'required|email',
+            'phone' => 'required',
+            'address' => 'nullable',
+            'city' => 'nullable',
+        ]);
+        try{
+            $user = User::findOrFail($id);
+            $user->update($validated);
+            Log::info("User updated ..!, ".$user->name);
+            return response()->json([
+                'user' => $user,
+            ], 200);
+        }catch(\Exception $e){
+            return response()->json([
+                'message' => 'User not found',
+            ]);
+        }
+    }
     /**
      * Remove the specified resource from storage.
      */
