@@ -20,6 +20,7 @@ class Place extends Model
         'location',
         'city',
         'country',
+        'location_url',
     ];
     protected $appends = ['public_url'];
     public function getPublicUrlAttribute()

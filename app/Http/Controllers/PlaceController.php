@@ -33,6 +33,7 @@ class PlaceController extends Controller
             'image_path' => 'required|file|mimes:png,jpg,jpeg,gif,svg',
             'description' => 'nullable',
             'location' => 'nullable',
+            'location_url' => 'nullable',
             'city' => 'required',
             'country' => 'required',
         ]);
@@ -84,6 +85,7 @@ class PlaceController extends Controller
             'image_path' => 'required|file|mimes:png,jpg,jpeg,gif,svg',
             'description' => 'nullable',
             'location' => 'nullable',
+            'location_url' => 'nullable',
             'city' => 'required',
             'country' => 'required',
         ]);
