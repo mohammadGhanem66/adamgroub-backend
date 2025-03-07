@@ -71,7 +71,7 @@ class User extends Authenticatable
     // let's write  function called files, will get all the files attached to the user from account_statment and containers tables
     public function files()
     {
-        $accountStatmentFiles = $this->account_statments()->get()->map(function ($file) {
+        $accountStatmentFiles = collect($this->account_statments()->get())->map(function ($file) {
             return [
                 'name'   => $file->file_name,
                 'url'  => $file->public_url,
@@ -81,7 +81,7 @@ class User extends Authenticatable
             ];
         });
 
-        $containerFiles = $this->containers()->get()->map(function ($file) {
+        $containerFiles = collect($this->containers()->get())->map(function ($file) {
             return [
                 'name'   => $file->file_name,
                 'url'  => $file->public_url,
