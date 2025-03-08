@@ -81,8 +81,6 @@ class PlaceController extends Controller
         //
         $validated = $request->validate([
             'name' => 'required',
-            'image_name' => 'required',
-            'image_path' => 'required|file|mimes:png,jpg,jpeg,gif,svg',
             'description' => 'nullable',
             'location' => 'nullable',
             'location_url' => 'nullable',
@@ -91,9 +89,10 @@ class PlaceController extends Controller
         ]);
         try{
             $place = Place::findOrFail($id);
-            $file = $request->file('image_path');
-            $path = $file->store('places', 'public');
-            $place->update(array_merge($validated, ['image_path' => $path]));
+            // $file = $request->file('image_path');
+            // $path = $file->store('places', 'public');
+            // $place->update(array_merge($validated, ['image_path' => $path]));
+            $place->update($validated);
             Log::info("Place updated ..!, ".$place->name);
             return response()->json([
                 'place' => $place,
