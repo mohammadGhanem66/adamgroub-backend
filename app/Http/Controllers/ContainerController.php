@@ -29,9 +29,10 @@ class ContainerController extends Controller
     public function store(Request $request, $user_id)
     {
         //
+        Log::info("Store container .. file path! ". $request->file('file_path'));
         $validated = $request->validate([
             'file_name' => 'required|string|max:255',
-            'file_path' => 'required|file|mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel',
+            'file_path' => 'required|file|mimes:doc,docx,pdf,xls,xlsx,png,jpg,jpeg,gif,svg', // Add file validation
             'type' => 'required|integer|in:0,1',
         ]);
         try{
