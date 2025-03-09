@@ -31,7 +31,7 @@ class ContainerController extends Controller
         //
         $validated = $request->validate([
             'file_name' => 'required|string|max:255',
-            'file_path' => 'required|file',
+            'file_path' => 'required|file|mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel',
             'type' => 'required|integer|in:0,1',
         ]);
         try{
