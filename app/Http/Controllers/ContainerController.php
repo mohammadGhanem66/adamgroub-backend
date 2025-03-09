@@ -31,7 +31,7 @@ class ContainerController extends Controller
         //
         $validated = $request->validate([
             'file_name' => 'required|string|max:255',
-            'file_path' => 'required|file|mimes:doc,docx,pdf,xls,xlsx,png,jpg,jpeg,gif,svg|max:2048', // Add file validation
+            'file_path' => 'required|file',
             'type' => 'required|integer|in:0,1',
         ]);
         try{
