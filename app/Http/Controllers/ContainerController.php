@@ -47,6 +47,7 @@ class ContainerController extends Controller
                 'file_name' => $validated['file_name'],
                 'file_path' => $path,
                 'type' => $validated['type'],
+                'tracking_number' => $validated['tracking_number'],
             ]);
 
             Log::info("Container created ..!, ".$container->file_name);

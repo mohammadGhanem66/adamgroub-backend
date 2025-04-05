@@ -32,6 +32,7 @@ class AccountStatmentController extends Controller
         $validated = $request->validate([
             'file_name' => 'required|string|max:255',
             'file_path' => 'required|file|mimes:doc,docx,pdf,xls,xlsx,png,jpg,jpeg,gif,svg|max:2048',
+            'tracking_number' => 'nullable|string|max:255',
         ]);
         try{
             $user = User::findOrFail($user_id);
@@ -42,6 +43,7 @@ class AccountStatmentController extends Controller
             $accountStatment = $user->account_statments()->create([
                 'file_name' => $validated['file_name'],
                 'file_path' => $path,
+                'tracking_number' => $validated['tracking_number'],
             ]);
 
             Log::info("Account-statment created ..!, ".$accountStatment->file_name);
