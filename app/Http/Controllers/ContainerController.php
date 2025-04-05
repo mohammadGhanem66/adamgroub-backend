@@ -34,6 +34,7 @@ class ContainerController extends Controller
             'file_name' => 'required|string|max:255',
             'file_path' => 'required|file|mimes:doc,docx,pdf,xls,xlsx,png,jpg,jpeg,gif,svg', // Add file validation
             'type' => 'required|integer|in:0,1',
+            'tracking_number' => 'nullable|string|max:255',
         ]);
         try{
             $user = User::findOrFail($user_id);

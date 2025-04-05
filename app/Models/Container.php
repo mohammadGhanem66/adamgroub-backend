@@ -15,7 +15,10 @@ class Container extends Model
         'file_name',
         'file_path',
         'user_id',
-        'type'
+        'type',
+        'tracking_number',
+        'is_delevired',
+        'delivery_date'
     ];
     protected $hidden = [
         'created_at',
