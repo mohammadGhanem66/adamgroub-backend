@@ -75,6 +75,9 @@ class User extends Authenticatable
             return [
                 'name'   => $file->file_name,
                 'url'  => $file->public_url,
+                'tracking_number'  => $file->tracking_number,
+                'is_delevired'  => $file->is_delevired,
+                'delivery_date'  => $file->delivery_date,
                 'extension'   => pathinfo($file->file_path, PATHINFO_EXTENSION),
                 'type'        => 'bank',
                 'date'        => $file->created_at
@@ -85,6 +88,9 @@ class User extends Authenticatable
             return [
                 'name'   => $file->file_name,
                 'url'  => $file->public_url,
+                'tracking_number'  => $file->tracking_number,
+                'is_delevired'  => $file->is_delevired,
+                'delivery_date'  => $file->delivery_date,
                 'extension'   => pathinfo($file->file_path, PATHINFO_EXTENSION),
                 'type'        => 'container',
                 'date'        => $file->created_at
